@@ -27814,7 +27814,7 @@ $RefreshReg$(_c, "Header");
 }
 },{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-router-dom":"9xmpe","../utils/useOnlineStatus":"181Ji","../utils/UserContext":"c5vgB","./Navbar":"5EEXV","@fortawesome/react-fontawesome":"clIT3","@fortawesome/free-solid-svg-icons":"5lkdy","react-redux":"62sf7","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"9xmpe":[function(require,module,exports) {
 /**
- * React Router DOM v6.21.3
+ * React Router DOM v6.22.1
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -28113,6 +28113,21 @@ const _excluded = [
     "preventScrollReset",
     "unstable_viewTransition"
 ];
+// HEY YOU! DON'T TOUCH THIS VARIABLE!
+//
+// It is replaced with the proper version at build time via a babel plugin in
+// the rollup config.
+//
+// Export a global property onto the window for React Router detection by the
+// Core Web Vitals Technology Report.  This way they can configure the `wappalyzer`
+// to detect and properly classify live websites as being built with React Router:
+// https://github.com/HTTPArchive/wappalyzer/blob/main/src/technologies/r.json
+const REACT_ROUTER_VERSION = "6";
+try {
+    window.__reactRouterVersion = REACT_ROUTER_VERSION;
+} catch (e) {
+// no-op
+}
 function createBrowserRouter(routes, opts) {
     return (0, _router.createRouter)({
         basename: opts == null ? void 0 : opts.basename,
@@ -29223,7 +29238,7 @@ let savedScrollPositions = {};
 
 },{"react":"21dqq","react-dom":"j6uA9","react-router":"dbWyW","@remix-run/router":"5ncDG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"dbWyW":[function(require,module,exports) {
 /**
- * React Router v6.21.3
+ * React Router v6.22.1
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -29565,7 +29580,26 @@ function useRoutesImpl(routes, locationArg, dataRouterState, future) {
         location = parsedLocationArg;
     } else location = locationFromContext;
     let pathname = location.pathname || "/";
-    let remainingPathname = parentPathnameBase === "/" ? pathname : pathname.slice(parentPathnameBase.length) || "/";
+    let remainingPathname = pathname;
+    if (parentPathnameBase !== "/") {
+        // Determine the remaining pathname by removing the # of URL segments the
+        // parentPathnameBase has, instead of removing based on character count.
+        // This is because we can't guarantee that incoming/outgoing encodings/
+        // decodings will match exactly.
+        // We decode paths before matching on a per-segment basis with
+        // decodeURIComponent(), but we re-encode pathnames via `new URL()` so they
+        // match what `window.location.pathname` would reflect.  Those don't 100%
+        // align when it comes to encoded URI characters such as % and &.
+        //
+        // So we may end up with:
+        //   pathname:           "/descendant/a%25b/match"
+        //   parentPathnameBase: "/descendant/a%b"
+        //
+        // And the direct substring removal approach won't work :/
+        let parentSegments = parentPathnameBase.replace(/^\//, "").split("/");
+        let segments = pathname.replace(/^\//, "").split("/");
+        remainingPathname = "/" + segments.slice(parentSegments.length).join("/");
+    }
     let matches = (0, _router.matchRoutes)(routes, {
         pathname: remainingPathname
     });
@@ -30470,7 +30504,7 @@ function createMemoryRouter(routes, opts) {
 
 },{"react":"21dqq","@remix-run/router":"5ncDG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5ncDG":[function(require,module,exports) {
 /**
- * @remix-run/router v1.14.2
+ * @remix-run/router v1.15.1
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -30859,6 +30893,10 @@ function getUrlBasedHistory(getLocation, createHref, validateLocation, options) 
         // See https://bugzilla.mozilla.org/show_bug.cgi?id=878297
         let base = window1.location.origin !== "null" ? window1.location.origin : window1.location.href;
         let href = typeof to === "string" ? to : createPath(to);
+        // Treating this as a full URL will strip any trailing spaces so we need to
+        // pre-encode them since they might be part of a matching splat param from
+        // an ancestor route
+        href = href.replace(/ $/, "%20");
         invariant(base, "No window.location.(origin|href) available to create URL for href: " + href);
         return new URL(href, base);
     }
@@ -30960,13 +30998,16 @@ function convertRoutesToDataRoutes(routes, mapRouteProperties, parentPath, manif
     let branches = flattenRoutes(routes);
     rankRouteBranches(branches);
     let matches = null;
-    for(let i = 0; matches == null && i < branches.length; ++i)matches = matchRouteBranch(branches[i], // Incoming pathnames are generally encoded from either window.location
-    // or from router.navigate, but we want to match against the unencoded
-    // paths in the route definitions.  Memory router locations won't be
-    // encoded here but there also shouldn't be anything to decode so this
-    // should be a safe operation.  This avoids needing matchRoutes to be
-    // history-aware.
-    safelyDecodeURI(pathname));
+    for(let i = 0; matches == null && i < branches.length; ++i){
+        // Incoming pathnames are generally encoded from either window.location
+        // or from router.navigate, but we want to match against the unencoded
+        // paths in the route definitions.  Memory router locations won't be
+        // encoded here but there also shouldn't be anything to decode so this
+        // should be a safe operation.  This avoids needing matchRoutes to be
+        // history-aware.
+        let decoded = decodePath(pathname);
+        matches = matchRouteBranch(branches[i], decoded);
+    }
     return matches;
 }
 function convertRouteMatchToUiMatch(match, loaderData) {
@@ -31199,7 +31240,7 @@ function matchRouteBranch(branch, pathname) {
         }
         const value = captureGroups[index];
         if (isOptional && !value) memo[paramName] = undefined;
-        else memo[paramName] = safelyDecodeURIComponent(value || "", paramName);
+        else memo[paramName] = (value || "").replace(/%2F/g, "/");
         return memo;
     }, {});
     return {
@@ -31246,19 +31287,11 @@ function compilePath(path, caseSensitive, end) {
         params
     ];
 }
-function safelyDecodeURI(value) {
+function decodePath(value) {
     try {
-        return decodeURI(value);
+        return value.split("/").map((v)=>decodeURIComponent(v).replace(/\//g, "%2F")).join("/");
     } catch (error) {
         warning(false, 'The URL path "' + value + '" could not be decoded because it is is a ' + "malformed URL segment. This is probably due to a bad percent " + ("encoding (" + error + ")."));
-        return value;
-    }
-}
-function safelyDecodeURIComponent(value, paramName) {
-    try {
-        return decodeURIComponent(value);
-    } catch (error) {
-        warning(false, 'The value for the URL param "' + paramName + '" will not be decoded because' + (' the string "' + value + '" is a malformed URL segment. This is probably') + (" due to a bad percent encoding (" + error + ")."));
         return value;
     }
 }
@@ -33018,7 +33051,8 @@ function createStaticHandler(routes, opts) {
     } else mapRouteProperties = defaultMapRouteProperties;
     // Config driven behavior flags
     let future = _extends({
-        v7_relativeSplatPath: false
+        v7_relativeSplatPath: false,
+        v7_throwAbortReason: false
     }, opts ? opts.future : null);
     let dataRoutes = convertRoutesToDataRoutes(routes, mapRouteProperties, undefined, manifest);
     /**
@@ -33199,10 +33233,7 @@ function createStaticHandler(routes, opts) {
                 isRouteRequest,
                 requestContext
             });
-            if (request.signal.aborted) {
-                let method = isRouteRequest ? "queryRoute" : "query";
-                throw new Error(method + "() call aborted: " + request.method + " " + request.url);
-            }
+            if (request.signal.aborted) throwStaticHandlerAbortedError(request, isRouteRequest, future);
         }
         if (isRedirectResult(result)) // Uhhhh - this should never happen, we should always throw these from
         // callLoaderOrAction, but the type narrowing here keeps TS happy and we
@@ -33310,10 +33341,7 @@ function createStaticHandler(routes, opts) {
                     requestContext
                 }))
         ]);
-        if (request.signal.aborted) {
-            let method = isRouteRequest ? "queryRoute" : "query";
-            throw new Error(method + "() call aborted: " + request.method + " " + request.url);
-        }
+        if (request.signal.aborted) throwStaticHandlerAbortedError(request, isRouteRequest, future);
         // Process and commit output from loaders
         let activeDeferreds = new Map();
         let context = processRouteLoaderData(matches, matchesToLoad, results, pendingActionError, activeDeferreds);
@@ -33342,12 +33370,17 @@ function createStaticHandler(routes, opts) {
  * provide an updated StaticHandlerContext suitable for a second SSR render
  */ function getStaticContextFromError(routes, context, error) {
     let newContext = _extends({}, context, {
-        statusCode: 500,
+        statusCode: isRouteErrorResponse(error) ? error.status : 500,
         errors: {
             [context._deepestRenderedBoundaryId || routes[0].id]: error
         }
     });
     return newContext;
+}
+function throwStaticHandlerAbortedError(request, isRouteRequest, future) {
+    if (future.v7_throwAbortReason && request.signal.reason !== undefined) throw request.signal.reason;
+    let method = isRouteRequest ? "queryRoute" : "query";
+    throw new Error(method + "() call aborted: " + request.method + " " + request.url);
 }
 function isSubmissionNavigation(opts) {
     return opts != null && ("formData" in opts && opts.formData != null || "body" in opts && opts.body !== undefined);
@@ -34412,7 +34445,7 @@ const Navbar = ()=>{
                 columnNumber: 7
             }, undefined),
             isOpen && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("ul", {
-                className: "flex  justify-center bg-cyan-900 bg-cover  rounded-full mx-auto font-semibold",
+                className: "flex  justify-center  bg-slate-300 bg-cover  rounded-full mx-auto font-semibold",
                 children: [
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("li", {
                         className: "px-4 mx-4 bg-slate-300 rounded-lg hover:bg-slate-400 hover:text-white",
@@ -61096,29 +61129,19 @@ const Body = ()=>{
                         columnNumber: 9
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                        className: " flex justify-center items-center ml-9 py-2 flex-col max-md:mx-auto bg-slate-300 rounded-xl ",
-                        children: [
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
-                                className: "text-yellow-950",
-                                children: "UserName : "
-                            }, void 0, false, {
-                                fileName: "src/components/Body.js",
-                                lineNumber: 136,
-                                columnNumber: 11
-                            }, undefined),
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
-                                placeholder: "UserName:",
-                                maxLength: 12,
-                                className: " border-black rounded-lg py-1 border-2 px-1",
-                                value: loggedInUser,
-                                onChange: (e)=>setUserName(e.target.value)
-                            }, void 0, false, {
-                                fileName: "src/components/Body.js",
-                                lineNumber: 137,
-                                columnNumber: 11
-                            }, undefined)
-                        ]
-                    }, void 0, true, {
+                        className: " flex justify-center items-center ml-9 py-2 flex-col max-md:mx-auto  rounded-xl ",
+                        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                            placeholder: "UserName:",
+                            maxLength: 12,
+                            className: " border-black rounded-lg py-1 border-2 px-1",
+                            value: loggedInUser,
+                            onChange: (e)=>setUserName(e.target.value)
+                        }, void 0, false, {
+                            fileName: "src/components/Body.js",
+                            lineNumber: 137,
+                            columnNumber: 11
+                        }, undefined)
+                    }, void 0, false, {
                         fileName: "src/components/Body.js",
                         lineNumber: 135,
                         columnNumber: 9
@@ -61130,7 +61153,7 @@ const Body = ()=>{
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                className: "res-container flex flex-wrap  max-sm:justify-center md:justify-center",
+                className: "res-container flex flex-wrap  max-sm:justify-center md:justify-center max-md:justify-center",
                 children: filteredRestaurants.map((restaurant)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
                         to: "/restaurants/" + restaurant.info.id,
                         children: restaurant.info.isOpen ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)(RestaurantCardPromoted, {
@@ -61883,12 +61906,15 @@ const RestaurantMenu = ()=>{
         lineNumber: 41,
         columnNumber: 12
     }, undefined);
-    console.log(resInfo);
-    const { name, costForTwoMessage } = resInfo?.cards[0]?.card?.card?.info;
-    const { itemCards } = resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card?.card;
+    // console.log("resinfo1",resInfo);
+    // console.log("resinfo",resInfo?.cards[2]?.card?.card?.info);
+    const { name, costForTwoMessage } = resInfo?.cards[2]?.card?.card?.info;
+    // const { itemCards } =
+    //   resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card?.card;
     // console.log(itemCards);
     // console.log(resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards);
-    const categories = resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter((c)=>c.card?.card?.["@type"] === "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory");
+    console.log("category", resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards);
+    const categories = resInfo?.cards[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter((c)=>c.card?.card?.["@type"] === "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory");
     // console.log(categories);
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
         className: "text-center",
@@ -61902,7 +61928,7 @@ const RestaurantMenu = ()=>{
                 ]
             }, void 0, true, {
                 fileName: "src/components/RestaurantMenu.js",
-                lineNumber: 62,
+                lineNumber: 64,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h3", {
@@ -61910,7 +61936,7 @@ const RestaurantMenu = ()=>{
                 children: costForTwoMessage
             }, void 0, false, {
                 fileName: "src/components/RestaurantMenu.js",
-                lineNumber: 63,
+                lineNumber: 65,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
@@ -61918,7 +61944,7 @@ const RestaurantMenu = ()=>{
                 children: resInfo?.cards[0]?.card?.card?.info?.cuisines.join(",")
             }, void 0, false, {
                 fileName: "src/components/RestaurantMenu.js",
-                lineNumber: 64,
+                lineNumber: 66,
                 columnNumber: 7
             }, undefined),
             categories.map((category, index)=>// controlled Component
@@ -61929,13 +61955,13 @@ const RestaurantMenu = ()=>{
                     dummy: dummy
                 }, category?.card?.card?.title, false, {
                     fileName: "src/components/RestaurantMenu.js",
-                    lineNumber: 70,
+                    lineNumber: 72,
                     columnNumber: 7
                 }, undefined))
         ]
     }, void 0, true, {
         fileName: "src/components/RestaurantMenu.js",
-        lineNumber: 61,
+        lineNumber: 63,
         columnNumber: 5
     }, undefined);
 };
@@ -66286,9 +66312,10 @@ parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
+var _reactRouterDom = require("react-router-dom");
 const Footer = ()=>{
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-        className: "bg-slate-300 mt-10 rounded-full max-md:rounded-lg",
+        className: "bg-slate-300 mt-10 rounded-lg max-md:rounded-md h-[200px] max-md:h-auto",
         children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
             className: " flex flex-row  items-center justify-between w-[80%] mx-auto  max-md:flex-col ",
             children: [
@@ -66296,99 +66323,124 @@ const Footer = ()=>{
                     children: [
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("img", {
                             alt: "Food Fiesta",
-                            className: "h-[78px] rounded-full",
+                            className: "h-[98px] rounded-full mt-2",
                             src: "https://as1.ftcdn.net/v2/jpg/02/10/07/94/1000_F_210079401_F4ONbo2mipFYjZbCNWqGluCYzhQv4LdA.jpg"
                         }, void 0, false, {
                             fileName: "src/components/Footer.js",
-                            lineNumber: 8,
+                            lineNumber: 9,
                             columnNumber: 11
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("span", {
-                            className: "font-bold text-neutral-800",
-                            children: " Food Fiesta"
+                            className: "font-bold text-neutral-800 hover:text-neutral-500 hover:cursor-pointer",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
+                                link: true,
+                                to: "/",
+                                children: "Food Fiesta"
+                            }, void 0, false, {
+                                fileName: "src/components/Footer.js",
+                                lineNumber: 14,
+                                columnNumber: 100
+                            }, undefined)
                         }, void 0, false, {
                             fileName: "src/components/Footer.js",
-                            lineNumber: 13,
+                            lineNumber: 14,
                             columnNumber: 11
                         }, undefined)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/Footer.js",
-                    lineNumber: 7,
+                    lineNumber: 8,
                     columnNumber: 9
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
                     className: "flex flex-col mt-2",
                     children: [
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h5", {
-                            className: "mb-2 font-semibold",
-                            children: "About Us"
-                        }, void 0, false, {
-                            fileName: "src/components/Footer.js",
-                            lineNumber: 17,
-                            columnNumber: 11
-                        }, undefined),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "mb-1",
-                            children: "Company Information"
-                        }, void 0, false, {
+                            className: "mb-2 font-semibold hover:cursor-pointer hover:underline hover:underline-offset-4",
+                            children: [
+                                "  ",
+                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
+                                    to: "/about",
+                                    children: " About Us "
+                                }, void 0, false, {
+                                    fileName: "src/components/Footer.js",
+                                    lineNumber: 18,
+                                    columnNumber: 110
+                                }, undefined)
+                            ]
+                        }, void 0, true, {
                             fileName: "src/components/Footer.js",
                             lineNumber: 18,
                             columnNumber: 11
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "mb-1",
-                            children: "Careers"
+                            className: "mb-1 hover:cursor-pointer hover:underline hover:underline-offset-4",
+                            children: "Company Information"
                         }, void 0, false, {
                             fileName: "src/components/Footer.js",
                             lineNumber: 19,
                             columnNumber: 11
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "mb-1",
-                            children: "Blog"
+                            className: "mb-1 hover:cursor-pointer hover:underline hover:underline-offset-4",
+                            children: "Careers"
                         }, void 0, false, {
                             fileName: "src/components/Footer.js",
                             lineNumber: 20,
+                            columnNumber: 11
+                        }, undefined),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                            className: "mb-1 hover:cursor-pointer hover:underline hover:underline-offset-4",
+                            children: "Blog"
+                        }, void 0, false, {
+                            fileName: "src/components/Footer.js",
+                            lineNumber: 21,
                             columnNumber: 11
                         }, undefined)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/Footer.js",
-                    lineNumber: 16,
+                    lineNumber: 17,
                     columnNumber: 9
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    className: "flex flex-col mt-2",
+                    className: "flex flex-col mt-2 ",
                     children: [
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h5", {
-                            className: "mb-2 font-semibold",
-                            children: "Contact"
-                        }, void 0, false, {
-                            fileName: "src/components/Footer.js",
-                            lineNumber: 23,
-                            columnNumber: 11
-                        }, undefined),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "mb-1",
-                            children: "Help & Support"
+                            className: "mb-2 font-semibold hover:cursor-pointer hover:underline hover:underline-offset-4",
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _reactRouterDom.Link), {
+                                to: "/contact",
+                                children: " Contact "
+                            }, void 0, false, {
+                                fileName: "src/components/Footer.js",
+                                lineNumber: 24,
+                                columnNumber: 108
+                            }, undefined)
                         }, void 0, false, {
                             fileName: "src/components/Footer.js",
                             lineNumber: 24,
                             columnNumber: 11
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "mb-1",
-                            children: "Partner with us"
+                            className: "mb-1 hover:cursor-pointer hover:underline hover:underline-offset-4",
+                            children: "Help & Support"
                         }, void 0, false, {
                             fileName: "src/components/Footer.js",
                             lineNumber: 25,
+                            columnNumber: 11
+                        }, undefined),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                            className: "mb-1 hover:cursor-pointer hover:underline hover:underline-offset-4",
+                            children: "Partner with us"
+                        }, void 0, false, {
+                            fileName: "src/components/Footer.js",
+                            lineNumber: 26,
                             columnNumber: 11
                         }, undefined)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/Footer.js",
-                    lineNumber: 22,
+                    lineNumber: 23,
                     columnNumber: 9
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -66396,52 +66448,52 @@ const Footer = ()=>{
                     children: [
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h5", {
                             "data-testid": "legal",
-                            className: "mb-2 font-semibold",
+                            className: "mb-2 font-semibold hover:cursor-pointer hover:underline hover:underline-offset-4",
                             children: "Legal"
-                        }, void 0, false, {
-                            fileName: "src/components/Footer.js",
-                            lineNumber: 28,
-                            columnNumber: 11
-                        }, undefined),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "mb-1",
-                            children: "Terms & Conditions"
                         }, void 0, false, {
                             fileName: "src/components/Footer.js",
                             lineNumber: 29,
                             columnNumber: 11
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "mb-1",
-                            children: "Refund & Cancellation"
+                            className: "mb-1 hover:cursor-pointer hover:underline hover:underline-offset-4",
+                            children: "Terms & Conditions"
                         }, void 0, false, {
                             fileName: "src/components/Footer.js",
                             lineNumber: 30,
                             columnNumber: 11
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
-                            className: "mb-3",
-                            children: "Privacy Policy"
+                            className: "mb-1 hover:cursor-pointer hover:underline hover:underline-offset-4",
+                            children: "Refund & Cancellation"
                         }, void 0, false, {
                             fileName: "src/components/Footer.js",
                             lineNumber: 31,
+                            columnNumber: 11
+                        }, undefined),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                            className: "mb-3 hover:cursor-pointer hover:underline hover:underline-offset-4",
+                            children: "Privacy Policy"
+                        }, void 0, false, {
+                            fileName: "src/components/Footer.js",
+                            lineNumber: 32,
                             columnNumber: 11
                         }, undefined)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/Footer.js",
-                    lineNumber: 27,
+                    lineNumber: 28,
                     columnNumber: 9
                 }, undefined)
             ]
         }, void 0, true, {
             fileName: "src/components/Footer.js",
-            lineNumber: 6,
+            lineNumber: 7,
             columnNumber: 7
         }, undefined)
     }, void 0, false, {
         fileName: "src/components/Footer.js",
-        lineNumber: 5,
+        lineNumber: 6,
         columnNumber: 5
     }, undefined);
 };
@@ -66455,6 +66507,6 @@ $RefreshReg$(_c, "Footer");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}]},["9A7zD","1xC6H","2kQhy"], "2kQhy", "parcelRequire3e28")
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","react-router-dom":"9xmpe"}]},["9A7zD","1xC6H","2kQhy"], "2kQhy", "parcelRequire3e28")
 
 //# sourceMappingURL=index.7271efb6.js.map

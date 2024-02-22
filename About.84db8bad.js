@@ -629,63 +629,42 @@ class About extends (0, _react.Component) {
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
             children: [
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h1", {
+                    className: "text-center font-bold bg-slate-400 h-[36px]",
                     children: "Meet Our Techies.."
                 }, void 0, false, {
                     fileName: "src/components/About.js",
-                    lineNumber: 22,
-                    columnNumber: 13
+                    lineNumber: 19,
+                    columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    children: [
-                        "loggedIn User",
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _userContextDefault.default).Consumer, {
-                            children: ({ loggedInUser })=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h1", {
-                                    children: loggedInUser
-                                }, void 0, false, {
-                                    fileName: "src/components/About.js",
-                                    lineNumber: 28,
-                                    columnNumber: 36
-                                }, this)
-                        }, void 0, false, {
-                            fileName: "src/components/About.js",
-                            lineNumber: 27,
-                            columnNumber: 16
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/components/About.js",
-                    lineNumber: 25,
-                    columnNumber: 13
-                }, this),
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                    className: "user-card-container flex max-sm:flex-col max-sm:justify-center max-sm:items-center",
+                    className: "flex  flex-wrap justify-content items-center max-sm:flex-col max-sm:justify-center max-sm:items-center max-2xl:justify-center ",
                     children: [
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _userDefault.default), {
                             name: "Kamran(function)"
                         }, void 0, false, {
                             fileName: "src/components/About.js",
-                            lineNumber: 32,
-                            columnNumber: 13
+                            lineNumber: 31,
+                            columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _userClassDefault.default), {
                             name: "Elon Musk(class)",
                             location: "US"
                         }, void 0, false, {
                             fileName: "src/components/About.js",
-                            lineNumber: 34,
-                            columnNumber: 13
+                            lineNumber: 33,
+                            columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "src/components/About.js",
-                    lineNumber: 31,
-                    columnNumber: 13
+                    lineNumber: 30,
+                    columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "src/components/About.js",
-            lineNumber: 21,
-            columnNumber: 9
+            lineNumber: 18,
+            columnNumber: 7
         }, this);
     }
 }
@@ -707,20 +686,20 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
+var _shimmer = require("../components/Shimmer");
+var _shimmerDefault = parcelHelpers.interopDefault(_shimmer);
 var _s = $RefreshSig$();
 const User = (props)=>{
     _s();
-    // const [count, setCount] = useState(0);
-    const [userInfo, setUserInfo] = (0, _react.useState)({
-        name: "Dreamer",
-        location: "India",
-        avatar_url: "https://git-scm.com/images/logos/downloads/Git-Logo-Black.png"
-    });
+    const [userInfo, setUserInfo] = (0, _react.useState)([
+        {
+            name: "Dreamer",
+            location: "India",
+            avatar_url: "https://git-scm.com/images/logos/downloads/Git-Logo-Black.png"
+        }
+    ]);
     (0, _react.useEffect)(()=>{
         getUserInfo();
-        //  const timer= setInterval(()=>{
-        //     console.log("it will not stop in class-based-component we used componentWillUnmount ")
-        //   },10000)
         console.log("useEffect called");
         // This function is there for unmounting
         return ()=>{
@@ -729,67 +708,68 @@ const User = (props)=>{
         };
     }, []);
     const getUserInfo = async ()=>{
-        const data = await fetch("https://api.github.com/users/mdkamran2023");
+        const data = await fetch("https://api.github.com/users");
         const json = await data.json();
-        setUserInfo(json);
+        console.log(json);
+        setUserInfo(json.slice(0, 10));
+        console.log(userInfo);
     };
-    const { name, location, avatar_url } = userInfo;
-    //   const { name } = props;
-    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-        className: "user-card bg-slate-700 w-72 rounded-lg p-4 m-4",
-        children: [
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("img", {
-                className: "rounded-full w-[50%] mx-auto pt-2",
-                src: avatar_url
-            }, void 0, false, {
-                fileName: "src/components/User.js",
-                lineNumber: 48,
-                columnNumber: 7
-            }, undefined),
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
-                className: "text-center text-white",
+    return userInfo.length == 0 ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _shimmerDefault.default), {}, void 0, false, {
+        fileName: "src/components/User.js",
+        lineNumber: 30,
+        columnNumber: 33
+    }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
+        children: userInfo.map(({ login, location = "US", avatar_url })=>{
+            return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                className: "user-card bg-slate-700 w-72 rounded-lg p-4 m-4",
                 children: [
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
-                        children: [
-                            "Name:",
-                            name
-                        ]
-                    }, void 0, true, {
-                        fileName: "src/components/User.js",
-                        lineNumber: 50,
-                        columnNumber: 7
-                    }, undefined),
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h3", {
-                        children: [
-                            "Location:",
-                            location
-                        ]
-                    }, void 0, true, {
-                        fileName: "src/components/User.js",
-                        lineNumber: 51,
-                        columnNumber: 7
-                    }, undefined),
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h4", {
-                        children: "Info:Functional Component"
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("img", {
+                        className: "rounded-full w-[50%] mx-auto pt-2",
+                        src: avatar_url
                     }, void 0, false, {
                         fileName: "src/components/User.js",
-                        lineNumber: 52,
-                        columnNumber: 7
+                        lineNumber: 35,
+                        columnNumber: 13
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                        className: "text-center text-white",
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h2", {
+                                children: [
+                                    "UserName:",
+                                    login
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/components/User.js",
+                                lineNumber: 40,
+                                columnNumber: 15
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("h3", {
+                                children: [
+                                    "Location:",
+                                    location
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/components/User.js",
+                                lineNumber: 41,
+                                columnNumber: 15
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/User.js",
+                        lineNumber: 39,
+                        columnNumber: 13
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/components/User.js",
-                lineNumber: 49,
-                columnNumber: 7
-            }, undefined)
-        ]
-    }, void 0, true, {
-        fileName: "src/components/User.js",
-        lineNumber: 37,
-        columnNumber: 5
-    }, undefined);
+                lineNumber: 34,
+                columnNumber: 11
+            }, undefined);
+        })
+    }, void 0, false);
 };
-_s(User, "F3kUO5Oil7elIYG8rMjRopxPhWs=");
+_s(User, "76D5QvcimZYvxXS43MvLRmZbyyc=");
 _c = User;
 exports.default = User;
 var _c;
@@ -800,7 +780,7 @@ $RefreshReg$(_c, "User");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"Vp2Fx":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","../components/Shimmer":"g6ZGj"}],"Vp2Fx":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$46df = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
