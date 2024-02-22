@@ -132,8 +132,8 @@ const Body = () => {
           </button>
         </div>
 
-        <div className=" flex justify-center items-center ml-9 py-2 flex-col max-md:mx-auto bg-slate-300 rounded-xl ">
-          <label className="text-yellow-950">UserName : </label>
+        <div className=" flex justify-center items-center ml-9 py-2 flex-col max-md:mx-auto  rounded-xl ">
+          {/* <label className="text-yellow-950">UserName : </label> */}
           <input
             placeholder="UserName:"
             maxLength={12}
@@ -144,7 +144,7 @@ const Body = () => {
         </div>
       </div>
 
-      <div className="res-container flex flex-wrap  max-sm:justify-center md:justify-center">
+      <div className="res-container flex flex-wrap  max-sm:justify-center md:justify-center max-md:justify-center">
         {filteredRestaurants.map((restaurant) => (
           <Link
             key={restaurant.info.id}
