@@ -20,7 +20,6 @@
   "bugs": {
     "url": "https://github.com/Mdkamran2023/namaste-_react/issues"
   },
-  "homepage": "https://mdkamran2023.github.io/food-fiesta",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
