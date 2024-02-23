@@ -60,10 +60,10 @@ const Body = () => {
           alignItems: "center",
         }}
       >
-        <img
+        {/* <img
           style={{ width: "200px", height: "200px" }}
           src={require("../../Assets/ff-transparent.svg")}
-        ></img>
+        ></img> */}
         <h1 style={{ color: "Blue" }}>
           Patience is bitter, but its fruit is sweet.
         </h1>
