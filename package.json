@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Adding styles Using TailWind Css",
   "source": "index.html",
+  "homepage":"https://mdkamran2023.github.io/food-fiesta/",
   "scripts": {
     "test": "jest",
     "start": "parcel index.html",
