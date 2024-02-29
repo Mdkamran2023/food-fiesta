@@ -1,6 +1,6 @@
 ## Projects
 
-### Food Fiesta
+### Food Fiesta [link](https://food-fiesta-5c31e.firebaseapp.com/)
 - **Description**: Developed a partial clone of the popular food delivery platform, Swiggy, as a means to understand and implement real-world web development practices.
 - **Technologies Used**: Tailwind CSS, ReactJS, Redux, Swiggy API.
 - **Key Features**:
