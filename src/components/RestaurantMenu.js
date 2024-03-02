@@ -41,7 +41,7 @@ const RestaurantMenu = () => {
     return <Shimmer />;
   }
   // console.log("resinfo1",resInfo);
-  console.log("resinfo",resInfo);
+  console.log("resinfo",resInfo?.cards[0]?.card?.card?.info);
   const { name, costForTwoMessage } = resInfo?.cards[0]?.card?.card?.info;
 
   // const { itemCards } =
