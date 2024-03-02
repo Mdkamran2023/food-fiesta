@@ -12,4 +12,3 @@
 - Conducted comprehensive **Unit Testing** and **Integration Testing** across various components of the application.
 - Achieved a test coverage of approximately **95%**, ensuring the majority of the codebase was effectively validated for correctness.
 - Utilized industry-standard testing frameworks and methodologies to identify and rectify defects, significantly improving the reliability and robustness of the application.
-
