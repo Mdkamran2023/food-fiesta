@@ -1,3 +1,4 @@
+[![codecove](https://codecov.io/gh/Mdkamran2023/food-fiesta/branch/main/graph/badge.svg)](https://app.codecov.io/gh/Mdkamran2023/food-fiesta)
 ## Projects
 
 ### [Food Fiesta](https://food-fiesta-5c31e.firebaseapp.com/)
