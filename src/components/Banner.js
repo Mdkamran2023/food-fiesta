@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Shimmer1 from "./Shimmer1";
+import { SWIGGY_RESTAURANT_CARDS_API } from "../utils/constants"
 
 const Banner = () => {
   const [bannerList, setBannerList] = useState([]);
@@ -10,7 +11,7 @@ const Banner = () => {
 
   const fetchBannerData = async () => {
     const data = await fetch(
-      "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9715987&lng=77.5945627&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
+      SWIGGY_RESTAURANT_CARDS_API
     );
     const json = await data.json();
 
@@ -23,11 +24,11 @@ const Banner = () => {
   return (bannerList.length===0) ? <Shimmer1/>
   :  (
     <div>
-      <h1 className="text-4xl ml-8">What's on your mind ?</h1>
+      <h1 className="text-4xl ml-8 max-md:text-3xl">What's on your mind ?</h1>
       <ul className="whitespace-nowrap overflow-x-auto overflow-y-hidden scrollbar-hide">
         {bannerList.map((bannerlistelem) => (
           <li  className="inline-block " key={bannerlistelem.id}>
-            <img
+            <img className=" max-sm:w-[218] max-md:w-[230]"
               src={
                 "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_258,h_290/" +
                 bannerlistelem.imageId

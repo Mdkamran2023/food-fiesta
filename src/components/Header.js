@@ -1,13 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import UserContext from "../utils/UserContext";
 import Navbar from "./Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
-import { useSelector } from "react-redux";
-// import image from "../../Assets/ff-transparent.svg";
+import { faCircle } from '@fortawesome/free-solid-svg-icons';
 
+// import image from "../../Assets/ff-transparent.svg";
 
 const Header = () => {
   // let btnNameJS="Login";
@@ -37,17 +38,40 @@ const Header = () => {
 
   return (
     <>
-      <div className="flex  justify-between bg-gray-100 shadow-lg mb-2 rounded-md w-full max-sm:flex-col max-md:flex-col lg:flex-row ">
+      <div className=" justify-between flex bg-gray-100 shadow-lg mb-2 rounded-md w-full  lg:flex-row ">
         <div className="ml-2">
           {/* <img data-testid="image_load" className="w-32 max-sm:mx-auto max-md:mx-auto" src={require('../../Assets/ff-transparent.svg')}></img> */}
-          <img  data-testid="image_load" className="w-32 max-sm:mx-auto max-md:mx-auto rounded-full" src={"https://as1.ftcdn.net/v2/jpg/02/10/07/94/1000_F_210079401_F4ONbo2mipFYjZbCNWqGluCYzhQv4LdA.jpg"}></img>
+          <Link link to="/">
+            {" "}
+            <img
+              data-testid="image_load"
+              className="w-32 max-sm:mx-auto max-md:mx-auto rounded-full"
+              src={
+                "https://as1.ftcdn.net/v2/jpg/02/10/07/94/1000_F_210079401_F4ONbo2mipFYjZbCNWqGluCYzhQv4LdA.jpg"
+              }
+            ></img>{" "}
+          </Link>
         </div>
         <div className="flex justify-center items-center ">
-          <ul className="flex p-4 m-4 max-md:flex-col lg:flex-row">
-            <li className="px-4 ">{onlineStatus ? "✅" : "🔴"} </li>
-            <li className="px-4 max-sm:mt-1 max-md:mt-1 font-bold">
+          <ul className="flex mr-4 md:mr-7 lg:mr-14 lg:flex-row">
+            {/* <li className="px-4 ">
+              {onlineStatus ? (
+                <span>
+                  <FontAwesomeIcon icon={faCircle} 
+                  style={{ color: "green", textDecoration: "line-through" }}/>
+                </span>
+              ) : (
+                <span>
+                  <FontAwesomeIcon
+                    icon={faCircle}
+                    style={{ color: "red", textDecoration: "line-through" }}
+                  />
+                </span>
+              )}
+            </li> */}
+            {/* <li className="px-4 max-sm:mt-1 max-md:mt-1 font-bold">
               <Link to="/"> Home</Link>
-            </li>
+            </li> */}
 
             <li className="px-4 max-sm:mt-1 max-md:mt-1 font-bold">
               <Link to="/cart">
@@ -75,15 +99,15 @@ const Header = () => {
               {/* how const variable is modified ? -- when u click on button it will re-render the whole header Component and btnNameReact will be new variable..... */}
               {btnNameReact}
             </button>
-            <li className="px-4 max-sm:mt-1 max-md:mt-1 font-bold font-sans">
+            {/* <li className="px-4 max-sm:mt-1 max-md:mt-1 font-bold font-sans">
               {loggedInUser}
-            </li>
+            </li> */}
+        <Navbar />
           </ul>
         </div>
       </div>
-      <div className="ml-[8]">
-        <Navbar />
-      </div>
+      {/* <div className="ml-[8]">
+      </div> */}
     </>
   );
 };

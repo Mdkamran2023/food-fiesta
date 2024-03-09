@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import Banner from "./Banner";
 import UserContext from "../utils/UserContext";
+import {SWIGGY_RESTAURANT_CARDS_API} from "../utils/constants"
 
 const Body = () => {
   //local state variable = Super powerful variable
@@ -32,10 +33,7 @@ const Body = () => {
     fetchData();
   }, []);
   const fetchData = async () => {
-    // https://corsproxy.io/
-    // https://test.cors.workers.dev/?.
-
-    const data = await fetch('https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9715987&lng=77.5945627&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING'
+    const data = await fetch(SWIGGY_RESTAURANT_CARDS_API
     );
 
     const json = await data.json();
@@ -61,10 +59,7 @@ const Body = () => {
           alignItems: "center",
         }}
       >
-        {/* <img
-          style={{ width: "200px", height: "200px" }}
-          src={require("../../Assets/ff-transparent.svg")}
-        ></img> */}
+    
         <h1 style={{ color: "Blue" }}>
           Patience is bitter, but its fruit is sweet.
         </h1>
@@ -89,7 +84,7 @@ const Body = () => {
     <div className="body">
       <Banner />
       <div className="filter flex max-md:flex-col">
-        <div className="search m-4 p-4 flex max-sm:flex-col max-md:mx-auto">
+        <div className="search m-2 p-4 flex max-sm:flex-col max-md:mx-auto">
           <input
             type="text"
             data-testid="searchInput"
@@ -117,7 +112,7 @@ const Body = () => {
         </div>
         <div className="flex justify-center items-center">
           <button
-            className="filter-btn  px-4 py-1 ml-2 border-2 border-gray-950 rounded-lg bg-gray-200"
+            className="filter-btn  px-4 py-1 ml-2  mb-2 border-2 border-gray-950 rounded-lg bg-gray-200"
             onClick={() => {
               // setListOfRestaurants();
               const filteredList = listOfRestaurants.filter(
@@ -133,8 +128,8 @@ const Body = () => {
           </button>
         </div>
 
-        <div className=" flex justify-center items-center ml-9 py-2 flex-col max-md:mx-auto  rounded-xl ">
-          {/* <label className="text-yellow-950">UserName : </label> */}
+        {/* <div className=" flex justify-center items-center ml-9 py-2 flex-col max-md:mx-auto  rounded-xl ">
+            <label className="text-yellow-950">UserName : </label> 
           <input
             placeholder="UserName:"
             maxLength={12}
@@ -142,7 +137,7 @@ const Body = () => {
             value={loggedInUser}
             onChange={(e) => setUserName(e.target.value)}
           ></input>
-        </div>
+        </div> */}
       </div>
 
       <div className="res-container flex flex-wrap  max-sm:justify-center md:justify-center max-md:justify-center">
