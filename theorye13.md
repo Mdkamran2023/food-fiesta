@@ -60,4 +60,7 @@ Remember, the balance between these testing types depends on your project’s co
  -  install  @babel/preset-react  -- to make JSX work in test cases
  -  include  @babel/preset-react  inside my babel config
  - install @testing-library/jest-dom
+
+   # Adding codecov  to github for coverage
+   [codecov](https://www.freecodecamp.org/news/how-to-generate-code-coverage-report-with-codecov-and-github-actions/)
   
