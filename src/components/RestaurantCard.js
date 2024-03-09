@@ -14,15 +14,15 @@ const RestaurantCard = (props) => {
     <div data-testid="resCard" className="flex flex-row">
       <div
         // style={{ backgroundColor: "#f0f0fa" }}
-        className="res-card m-4 p-4 w-[250px] rounded-lg hover:scale-[1.08] bg-slate-100 hover:bg-slate-200 overflow-hidden"
+        className="res-card m-4 p-4 w-[290px] h-[330px] rounded-lg hover:scale-[1.05] bg-slate-100 hover:bg-slate-200  "
       >
         <img
-          className="res-logo rounded-lg"
+          className="res-logo rounded-lg h-[170] w-[98%] "
           // style={{ padding: "0", margin: "0" }}
           src={CDN_URL + resData.info.cloudinaryImageId}
         ></img>
         <h3 className="font-bold py-2 text-lg">{name}</h3>
-        <h4 className="whitespace-initial">{cuisines.join(",")} </h4>
+        <h4 className="whitespace-nowrap overflow-x-auto no-scrollbar">{cuisines.join(",")} </h4>
         <h4>{avgRating} stars</h4>
         <div
           className="cost-del flex justify-between"
@@ -35,7 +35,7 @@ const RestaurantCard = (props) => {
           <span>{costForTwo}</span>
           <span>ETA:{sla.deliveryTime} minutes</span>
         </div>
-        <h4 className="px-1">Energized By:{loggedInUser}</h4>
+        {/* <h4 className="px-1">Energized By:{loggedInUser}</h4> */}
       </div>
     </div>
   );
@@ -48,10 +48,16 @@ const RestaurantCard = (props) => {
 // returning a component "retun(props)=>{return()}"
 export const withPromotedLabel = (RestaurantCard) => {
   return (props) => {
+    // const {header,subHeader}=(props?.resData?.info?.aggregatedDiscountInfoV3);
+    console.log("Props", props.resData.info.aggregatedDiscountInfoV3);
     return (
-      <div>
-        <label className="absolute bg-black text-white m-2 p-2 rounded-lg ">
-          👍WOW!!
+      <div className="relative">
+        <label className="absolute font-bold text-xl text-white m-2 p-2 left-10 top-36 bg-gradient-to-t from-black z-40 group-hover:scale-50 rounded-md ">
+          {/* 👍WOW!! */}
+          <span>{props?.resData?.info?.aggregatedDiscountInfoV3?.header}</span>
+          <span className="mx-1">
+            {props?.resData?.info?.aggregatedDiscountInfoV3?.subHeader}
+          </span>
         </label>
         <RestaurantCard {...props} />
       </div>

@@ -28,9 +28,10 @@ const Banner = () => {
       <ul className="whitespace-nowrap overflow-x-auto overflow-y-hidden scrollbar-hide">
         {bannerList.map((bannerlistelem) => (
           <li  className="inline-block " key={bannerlistelem.id}>
-            <img className=" max-sm:w-[218] max-md:w-[230]"
+            <img
+            //  className=" max-sm:w-[218] max-md:w-[230]"
               src={
-                "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_258,h_290/" +
+                "https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_154,h_190/" +
                 bannerlistelem.imageId
               }
               alt={bannerlistelem.id}
