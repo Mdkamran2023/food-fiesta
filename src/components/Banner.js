@@ -23,8 +23,8 @@ const Banner = () => {
 
   return (bannerList.length===0) ? <Shimmer1/>
   :  (
-    <div>
-      <h1 className="text-4xl ml-8 max-md:text-3xl">What's on your mind ?</h1>
+    <div className="ml-8">
+      <h1 className="text-3xl ml-8 ">What's on your mind ?</h1>
       <ul className="whitespace-nowrap overflow-x-auto overflow-y-hidden scrollbar-hide">
         {bannerList.map((bannerlistelem) => (
           <li  className="inline-block " key={bannerlistelem.id}>

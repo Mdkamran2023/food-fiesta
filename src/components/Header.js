@@ -39,13 +39,13 @@ const Header = () => {
   return (
     <>
       <div className=" justify-between flex bg-gray-100 shadow-lg mb-2 rounded-md w-full  lg:flex-row ">
-        <div className="ml-2">
+        <div className="ml-4">
           {/* <img data-testid="image_load" className="w-32 max-sm:mx-auto max-md:mx-auto" src={require('../../Assets/ff-transparent.svg')}></img> */}
           <Link link to="/">
             {" "}
             <img
               data-testid="image_load"
-              className="w-32 max-sm:mx-auto max-md:mx-auto rounded-full"
+              className="w-28 max-sm:mx-auto max-md:mx-auto rounded-full"
               src={
                 "https://as1.ftcdn.net/v2/jpg/02/10/07/94/1000_F_210079401_F4ONbo2mipFYjZbCNWqGluCYzhQv4LdA.jpg"
               }
