@@ -45,7 +45,8 @@ const Header = () => {
             {" "}
             <img
               data-testid="image_load"
-              className="w-28 max-sm:mx-auto max-md:mx-auto rounded-full"
+              className="w-28 max-sm:mx-auto max-md:mx-auto rounded-full  shadow-xl" 
+              // box-shadow 20px 20px 60px black inset -20px -20px 60px white
               src={
                 "https://as1.ftcdn.net/v2/jpg/02/10/07/94/1000_F_210079401_F4ONbo2mipFYjZbCNWqGluCYzhQv4LdA.jpg"
               }

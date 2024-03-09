@@ -84,7 +84,7 @@ const Body = () => {
     <div className="body">
       <Banner />
       <div className="filter flex max-md:flex-col">
-        <div className="search m-2 p-4 flex max-sm:flex-col max-md:mx-auto">
+        <div className="search ml-8 m-2 p-4 flex max-sm:flex-col max-md:mx-auto">
           <input
             type="text"
             data-testid="searchInput"
@@ -110,6 +110,7 @@ const Body = () => {
             Search
           </button>
         </div>
+        <div className="whitespace-nowrap flex overflow-x-auto no-scrollbar ">
         <div className="flex justify-center items-center">
           <button
             className="filter-btn  px-4 py-1 ml-2  mb-2 border-2 border-gray-950 rounded-lg bg-gray-200"
@@ -126,6 +127,57 @@ const Body = () => {
           >
             Top Rated Restaurants
           </button>
+        </div >
+        <div className="flex justify-center items-center">
+          <button
+            className="filter-btn  px-4 py-1 ml-2  mb-2 border-2 border-gray-950 rounded-lg bg-gray-200"
+            onClick={() => {
+              // setListOfRestaurants();
+              const filteredList = listOfRestaurants.filter(
+                (res) => res.info.sla.deliveryTime <= 28
+              );
+              // console.log(listOfRestaurants) ;
+              // whenever a state variable updates React re-renders the Components
+              // console.log(filteredList);
+              setFilteredRestaurants(filteredList);
+            }}
+          >
+            Fast Delivery
+          </button>
+        </div>
+        <div className="flex justify-center items-center">
+          <button
+            className="filter-btn  px-4 py-1 ml-2  mb-2 border-2 border-gray-950 rounded-lg bg-gray-200"
+            onClick={() => {
+              // setListOfRestaurants();
+              const filteredList = listOfRestaurants.filter(
+                (res) => res.info.costForTwo <"₹300"
+              );
+              // console.log(listOfRestaurants) ;
+              // whenever a state variable updates React re-renders the Components
+              // console.log(filteredList);
+              setFilteredRestaurants(filteredList);
+            }}
+          >
+            Less Than Rs.300
+          </button>
+        </div>
+        <div className="flex justify-center items-center">
+          <button
+            className="filter-btn  px-4 py-1 ml-2  mb-2 border-2 border-gray-950 rounded-lg bg-gray-200"
+            onClick={() => {
+              // setListOfRestaurants();
+              const filteredList = listOfRestaurants.filter(
+                (res) =>{ res.info.costForTwo >"₹300" && res.info.costForTwo <"₹600" }
+              );
+              // console.log(listOfRestaurants) ;
+              // whenever a state variable updates React re-renders the Components
+              // console.log(filteredList);
+              setFilteredRestaurants(filteredList);
+            }}
+          >
+             Rs.300-Rs.600
+          </button>
         </div>
 
         {/* <div className=" flex justify-center items-center ml-9 py-2 flex-col max-md:mx-auto  rounded-xl ">
@@ -138,6 +190,7 @@ const Body = () => {
             onChange={(e) => setUserName(e.target.value)}
           ></input>
         </div> */}
+        </div>
       </div>
 
       <div className="res-container flex flex-wrap  max-sm:justify-center md:justify-center max-md:justify-center">

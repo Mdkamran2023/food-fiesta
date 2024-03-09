@@ -24,7 +24,7 @@ const Navbar = () => {
               <FontAwesomeIcon icon={faTimes} size="2x" />
             </button>
           )}
-          <ul className="flex  flex-col absolute justify-center items-center  bg-teal-900 bg-opacity-90  bg-cover max-sm:w-screen max-sm:h-1/2  w-[30%] h-2/5 rounded-lg font-semibold top-36 right-0">
+          <ul className="flex  flex-col absolute justify-center items-center  bg-teal-900 bg-opacity-90  bg-cover max-sm:w-screen max-sm:h-1/2  w-[30%] h-2/5 rounded-lg font-semibold top-32 right-0">
             {/* {isOpen && (
               <button
                 className="absolute  top-0 right-0"

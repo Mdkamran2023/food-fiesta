@@ -23,12 +23,12 @@ const ItemList = ({ items, dummy }) => {
         >
           <div className=" w-3/12 relative flex-shrink-0  md:w-auto md:mr-0 md:ml-4 ">
             <img
-              className="w-32 h-24 rounded-md max-sm:w-[128px] "
+              className="w-32 h-24 rounded-md max-sm:min-w-[128px] "
               src={CDN_URL + item.card.info.imageId}
               alt={item.card.info.name}
             />
             <button
-              className="absolute bottom-0 left-1/2 transform -translate-x-1/2 md:static md:translate-x-0 md:translate-y-0 -translate-y-full bg-gray-200 text-black py-1 px-4 rounded-md cursor-pointer hover:bg-slate-600"
+              className="absolute flex  -bottom-0 bg-gray-200 mix-blend-luminosity text-black py-1 px-4 rounded-md cursor-pointer hover:bg-slate-600"
               onClick={() => handleAddItem(item)}
             >
               Add
@@ -42,7 +42,7 @@ const ItemList = ({ items, dummy }) => {
                 ? item.card.info.defaultPrice / 100
                 : item.card.info.price / 100}
             </span>
-            <p className="text-sm">{item.card.info.description}</p>
+            <p className="text-sm text-nowrap overflow-x-auto no-scrollbar">{item.card.info.description}</p>
           </div>
         </div>
       ))}

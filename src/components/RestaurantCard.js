@@ -1,6 +1,8 @@
 import { CDN_URL } from "../utils/constants";
 import { useContext } from "react";
 import UserContext from "../utils/UserContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
 
 const RestaurantCard = (props) => {
   // const{image,resData}=props;
@@ -17,13 +19,21 @@ const RestaurantCard = (props) => {
         className="res-card m-4 p-4 w-[290px] h-[330px] rounded-lg hover:scale-[1.05] bg-slate-100 hover:bg-slate-200  "
       >
         <img
-          className="res-logo rounded-lg h-[170] w-[98%] "
+          className="res-logo rounded-lg h-[170] w-[100%] "
           // style={{ padding: "0", margin: "0" }}
           src={CDN_URL + resData.info.cloudinaryImageId}
         ></img>
-        <h3 className="font-bold py-2 text-lg">{name}</h3>
-        <h4 className="whitespace-nowrap overflow-x-auto no-scrollbar">{cuisines.join(",")} </h4>
-        <h4>{avgRating} stars</h4>
+        <h3 className="font-bold py-2 text-lg  whitespace-nowrap overflow-x-auto no-scrollbar">
+          {name}
+        </h3>
+        <h4 className="whitespace-nowrap overflow-x-auto no-scrollbar">
+          {cuisines.join(",")}{" "}
+        </h4>
+        <h4>
+          {" "}
+          <FontAwesomeIcon icon={faStar} color="gold"  style={{ marginRight: "2px" }}/>
+          {avgRating} stars
+        </h4>
         <div
           className="cost-del flex justify-between"
           // style={{
