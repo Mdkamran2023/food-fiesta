@@ -168,7 +168,7 @@ const Body = () => {
             onClick={() => {
               // setListOfRestaurants();
               const filteredList = listOfRestaurants.filter(
-                (res) =>{ res.info.costForTwo >"₹300" && res.info.costForTwo <"₹600" }
+                (res) =>res.info.costForTwo >"₹300" && res.info.costForTwo <"₹600" 
               );
               // console.log(listOfRestaurants) ;
               // whenever a state variable updates React re-renders the Components
