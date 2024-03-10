@@ -81,7 +81,7 @@ const Body = () => {
   return listOfRestaurants.length == 0 ? (
     <Shimmer />
   ) : (
-    <div className="body">
+    <div className="body lg-w-[80%]">
       <Banner />
       <div className="filter flex max-md:flex-col">
         <div className="search ml-8 m-2 p-4 flex max-sm:flex-col max-md:mx-auto">

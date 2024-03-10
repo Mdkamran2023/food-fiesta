@@ -62,7 +62,7 @@ export const withPromotedLabel = (RestaurantCard) => {
     console.log("Props", props.resData.info.aggregatedDiscountInfoV3);
     return (
       <div className="relative">
-        <label className="absolute font-bold text-xl text-white m-2 p-2 left-10 top-36 bg-gradient-to-t from-black z-40 group-hover:scale-50 rounded-md ">
+        <label className="absolute font-bold text-xl text-white m-2 p-2 left-6 top-[149px] bg-gradient-to-t from-black z-40 group-hover:scale-50 rounded-md w-[259px] ">
           {/* 👍WOW!! */}
           <span>{props?.resData?.info?.aggregatedDiscountInfoV3?.header}</span>
           <span className="mx-1">
