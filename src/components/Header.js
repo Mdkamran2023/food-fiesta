@@ -44,6 +44,7 @@ const Header = () => {
           <Link link to="/">
             {" "}
             <img
+            alt="Food Fietsa"
               data-testid="image_load"
               className="w-28 max-sm:mx-auto max-md:mx-auto rounded-full  shadow-xl" 
               // box-shadow 20px 20px 60px black inset -20px -20px 60px white
